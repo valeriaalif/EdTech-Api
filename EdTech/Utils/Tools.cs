@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Web;
 using EdTech.Entities;
+using MailKit.Security;
 
 
 
@@ -57,7 +58,7 @@ namespace EdTech.Utils
 
                 using (var client = new SmtpClient())
                 {
-                    client.Connect("smtp.office365.com", 587, false);
+                    client.Connect("smtp.office365.com", 587, /*false*/ SecureSocketOptions.StartTls);
                     client.Authenticate(emailSender, emailSenderPassword);
                     client.Send(message);
                     client.Disconnect(true);
@@ -67,18 +68,20 @@ namespace EdTech.Utils
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error sending email: {ex.Message}");
                 Console.WriteLine($"Error: {ex}");
+                if(ex.InnerException != null)
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 return false;
             }
         }
-        public string MakeHtmlNewUser(User userData, string tempPassword)
+        public string MakeHtmlNewUser(User userData)
         {
             try
             {
                 string fileRoute = Path.Combine(_hostingEnvironment.ContentRootPath, "HtmlTemplates\\registration.html");
                 string htmlFile = System.IO.File.ReadAllText(fileRoute);
                 htmlFile = htmlFile.Replace("@@nickname", userData.UserName);
-                htmlFile = htmlFile.Replace("@@activationCode", tempPassword);
                 string hashedId = Encrypt(userData.UserId.ToString());
                 string encodedHashedId = HttpUtility.UrlEncode(hashedId);
                 htmlFile = htmlFile.Replace("@@Link", "https://localhost:7009/Authentication/ActivateAccount?q=" + encodedHashedId);
@@ -128,6 +131,11 @@ namespace EdTech.Utils
                 return "Error";
             }
         }
+
+   
+
+
+
         public string GenerateToken(string userId, string user_Type)
         {
             List<Claim> claims = new List<Claim>();
@@ -136,7 +144,7 @@ namespace EdTech.Utils
 
 
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("8Tc2nR3QBamz1ipE3b9aYSiTPYoGXQsy"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecureKey()));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
@@ -227,6 +235,16 @@ namespace EdTech.Utils
             }
         }
 
+        public string GenerateSecureKey(int keySize = 64) // keySize in bytes
+        {
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                var keyBytes = new byte[keySize];
+                rng.GetBytes(keyBytes);
+                return Convert.ToBase64String(keyBytes);
+            }
+        }
+
         public string GenerateRandomCode(int length)
         {
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -238,9 +256,6 @@ namespace EdTech.Utils
             }
             return res.ToString();
         }
-
-
-
 
     }
 }

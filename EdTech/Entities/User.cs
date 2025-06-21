@@ -1,4 +1,5 @@
-﻿namespace EdTech.Entities
+﻿
+namespace EdTech.Entities
 {
     public class User
     {

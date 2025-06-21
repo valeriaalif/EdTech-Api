@@ -21,7 +21,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    // Disable certificate validation in development (only for local testing)
+    System.Net.ServicePointManager.ServerCertificateValidationCallback =
+        (sender, certificate, chain, sslPolicyErrors) => true;
+    //app.UseSwagger();
+    app.UseSwagger(options =>
+    {
+        options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;
+    });
     app.UseSwaggerUI();
 }
 

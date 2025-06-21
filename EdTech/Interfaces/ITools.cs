@@ -6,10 +6,11 @@ namespace EdTech.Interfaces
     public interface ITools
     {
         String CreatePassword(int length);
+        String GenerateSecureKey(int keySize);
         String GenerateRandomCode(int length);
         bool SendEmail(string recipient, string subject, string body);
-        public string GenerateToken(string userId, string userType);
-        string MakeHtmlNewUser(User userData, string temporalPassword);
+        public string GenerateToken(string userId , string userType);
+        string MakeHtmlNewUser(User userData);
         string MakeHtmlEmailAdvertisement(string body, string imageUrl);
         string Encrypt(string texto);
         string Decrypt(string texto);
