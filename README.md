@@ -53,9 +53,11 @@ Example: If using .NET 8.0 select the version that matches.
 After running the application it will display on your browser using Swagger UI.
 You either can test it form Swagger UI or using Postman. 
 - Swagger UI  
-<img src="https://github.com/user-attachments/assets/97b08ed1-1933-4315-95de-2d446bdb3b5e" alt="Swagger UI" width="400"/>
+<img src="https://github.com/user-attachments/assets/97b08ed1-1933-4315-95de-2d446bdb3b5e" alt="Swagger UI" width="400" height= "200"/>
+
+
 - Postman  
-<img src="https://github.com/user-attachments/assets/00f2428e-579d-434a-90a8-67bd4a574666" alt="Postman" width="400"/>
+<img src="https://github.com/user-attachments/assets/00f2428e-579d-434a-90a8-67bd4a574666" alt="Postman" width="400" height= "300"/>
 
 
 
